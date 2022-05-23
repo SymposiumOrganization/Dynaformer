@@ -1,0 +1,34 @@
+defaults:
+  - test_sets: none
+
+
+generate_training_dataset: True
+njobs: 20
+
+Q:
+  max: 8000
+  min: 5000
+  res: 50
+R:
+  max: 0.45
+  min: 0.017215
+  res: 50
+
+
+reject_trajectory_shorter_than: 500
+reject_trajectory_longer_than: 20000
+N_currents: 1000 # Different number of currents
+q_r_linspace: True # skip some q and r combinations
+perc_linspace: 0.75  # percentage of curves dropped
+current:
+  current_type: variable_currents # You can use variable_currents or constant_currents
+  min: 0.05
+  max: 3
+  N_profiles: 6  #Number of piecewise constant profiles within a current
+
+
+
+chunk_size: 20 # Number of samples per batch
+hydra:
+  run:
+    dir: data/${current.current_type}/${now:%Y-%m-%d}/${now:%H-%M-%S}

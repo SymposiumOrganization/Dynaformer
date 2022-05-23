@@ -1,0 +1,33 @@
+# Dynaformer: A Deep Learning Model for Ageing-aware Battery Discharge Prediction
+Implementation, data and pretrained models for the paper "Dynaformer: A Deep Learning Model for Ageing-aware Battery Discharge Prediction"
+
+## How to setup
+* Clone the repository: `git clone`
+* Create a virtual environment: `python -m venv venv` # Note, we used python 3.6 for this project on Ubuntu 18.04
+* Activate the virtual environment: `source venv/bin/activate`
+* Install dependencies: `pip install -r requirements.txt`
+* Download the model/data `python scripts/download_data.py` # It will download the weights of Dynaformer on synthetic data and the test data
+
+## How to run with the downloaded model/data
+* Visualize the inference via `streamlit run visualization/visualize_predictions.py`
+
+## How to generate a synthetic training dataset
+* Generate a synthetic training dataset via `python3 scripts/generate_dataset.py`. The total number of samples is equal to Q.res*R.res*N_currents. You can change the parameters in config/generate_dataset.yaml or via command line. We use Hydra as configuration tool.
+You can also change current.current_type to `constant_currents` to generate a constant current dataset.
+The synthetic dataset is saved in `dataset/variable_currents` or `dataset/constant_currents`.
+
+## TODO
+* [X] Add a demo of the model
+* [ ] Add a demo of the model on real data
+* [ ] Add training/testing dataset generation
+* [ ] Add training pipeline
+* [ ] Add baseline models
+
+## Additional information
+### Pretrained models and data 
+Please note that these are downloaded already with the script `download_data.py`. 
+* Dynaformer `https://drive.google.com/open?id=1-_QZQ-_j_X8W_Xq_X_X_X_X_X_X`
+* Synthetic data `https://drive.google.com/open?id=1-_QZQ-_j_X8W_Xq_X_X_X_X_X_X`
+
+### System Specification
+All the experiments were done with Python 3.6 with pytorch 1.9.0+cu111 on Ubuntu 18.04.
