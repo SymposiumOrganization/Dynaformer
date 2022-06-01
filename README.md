@@ -13,16 +13,15 @@ Implementation, data and pretrained models for the paper "Dynaformer: A Deep Lea
 
 ## How to generate a synthetic training dataset
 * Generate a synthetic training dataset via `python3 scripts/generate_dataset.py`. We use [Hydra](https://github.com/facebookresearch/hydra) as configuration tool. The configuration file is `configs/generate_dataset.yaml`.
-* For generating a **synthetic constant training dataset***, similar the one in the paragraph of the paper "Performance Evaluation on Constant Load Profiles" you can use the following command:
+* For generating a **synthetic constant training dataset**, similar the one in the paragraph of the paper "Performance Evaluation on Constant Load Profiles" you can use the following command:
 ```
 python3 scripts/generate_dataset.py current.current_type=constant_currents N_profiles=1 N_currents=50
 ```
-* For generating a **synthetic variable training dataset***, similar the one in the paragraph of the paper "Performance Evaluation on Variable Load Profiles" you can use the following command:
+* For generating a **synthetic variable training dataset**, similar the one in the paragraph of the paper "Performance Evaluation on Variable Load Profiles" you can use the following command:
 ```
 python3 scripts/generate_dataset.py
 ```
 
-Alternatively you directly download our datasets with the link:
 
 
 The total number of samples is equal to Q.res*R.res*N_currents. You can change the parameters in config/generate_dataset.yaml or via command line. 
