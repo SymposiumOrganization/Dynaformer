@@ -34,7 +34,7 @@ The generated dataset is saved in `dataset/variable_currents` or `dataset/consta
 ## TODO
 * [X] Add a demo of the model
 * [ ] Add a demo of the model on real data
-* [] Add training/testing dataset generation
+* [ ] Add training/testing dataset generation
 * [ ] Add training pipeline
 * [ ] Add baseline models
 
