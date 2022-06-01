@@ -1,7 +1,7 @@
 # Dynaformer: A Deep Learning Model for Ageing-aware Battery Discharge Prediction
 Implementation, data and pretrained models for the paper "Dynaformer: A Deep Learning Model for Ageing-aware Battery Discharge Prediction"
 
-## How to setup
+## How to get started
 * Clone the repository: `git clone`
 * Create a virtual environment: `python -m venv venv` # Note, we used python 3.6 for this project on Ubuntu 18.04
 * Activate the virtual environment: `source venv/bin/activate`
@@ -12,9 +12,25 @@ Implementation, data and pretrained models for the paper "Dynaformer: A Deep Lea
 * Visualize the inference via `streamlit run visualization/visualize_predictions.py`
 
 ## How to generate a synthetic training dataset
-* Generate a synthetic training dataset via `python3 scripts/generate_dataset.py`. The total number of samples is equal to Q.res*R.res*N_currents. You can change the parameters in config/generate_dataset.yaml or via command line. We use Hydra as configuration tool.
+* Generate a synthetic training dataset via `python3 scripts/generate_dataset.py`. We use [Hydra](https://github.com/facebookresearch/hydra) as configuration tool. The configuration file is `configs/generate_dataset.yaml`.
+* For generating a **synthetic constant training dataset***, similar the one in the paragraph of the paper "Performance Evaluation on Constant Load Profiles" you can use the following command:
+```
+python3 scripts/generate_dataset.py current.current_type=constant_currents N_profiles=1 N_currents=50
+```
+* For generating a **synthetic variable training dataset***, similar the one in the paragraph of the paper "Performance Evaluation on Variable Load Profiles" you can use the following command:
+```
+python3 scripts/generate_dataset.py
+```
+
+Alternatively you directly download our datasets with the link:
+
+
+The total number of samples is equal to Q.res*R.res*N_currents. You can change the parameters in config/generate_dataset.yaml or via command line. 
 You can also change current.current_type to `constant_currents` to generate a constant current dataset.
-The synthetic dataset is saved in `dataset/variable_currents` or `dataset/constant_currents`.
+For instance,  `python3 scripts/generate_dataset.py`
+
+
+The generated dataset is saved in `dataset/variable_currents` or `dataset/constant_currents`.
 
 ## TODO
 * [X] Add a demo of the model
