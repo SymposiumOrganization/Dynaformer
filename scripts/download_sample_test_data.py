@@ -25,6 +25,7 @@ def main():
     print("Creating folders")
     Path("runs/2022-03-03").mkdir(parents=True, exist_ok=True)
     Path("tmp/").mkdir(parents=True, exist_ok=True)
+    Path("data/").mkdir(parents=True, exist_ok=True)
 
     # Download weights from following link
     print("Downloading weights...")

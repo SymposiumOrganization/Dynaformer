@@ -22,7 +22,7 @@ python3 scripts/generate_dataset.py current.current_type=constant_currents N_pro
 python3 scripts/generate_dataset.py
 ```
 
-Alternatively you directly download our datasets with the link:
+Alternatively you directly download our variable training dataset via `python scripts/download_training_data.py --dataset_type variable`.
 
 
 The total number of samples is equal to Q.res*R.res*N_currents. You can change the parameters in config/generate_dataset.yaml or via command line. 
@@ -35,6 +35,7 @@ The generated dataset is saved in `dataset/variable_currents` or `dataset/consta
 ## TODO
 * [X] Add a demo of the model
 * [ ] Add a demo of the model on real data
+* [X] Add training dataset
 * [ ] Add training/testing dataset generation
 * [ ] Add training pipeline
 * [ ] Add baseline models
