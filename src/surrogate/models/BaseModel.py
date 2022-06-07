@@ -71,42 +71,42 @@ class BaseModel2(LightningModule):
     def validation_step(self, input, batch_idx):
         '''used for logging metrics'''
         val_idx = 0 
-        if val_idx == 0:
-            padded_current, padded_voltage, padded_xx, padded_yy, padded_tt, metadata= input
-        else:
-            padded_current, padded_voltage, padded_xx, padded_yy, padded_tt= input
+        #if val_idx == 0:
+        padded_current, padded_voltage, padded_xx, padded_yy, padded_tt, metadata= input
+        # else:
+        #     padded_current, padded_voltage, padded_xx, padded_yy, padded_tt= input
         #xx, yy, x, y = preprocessing(batch)
         inp = torch.cat([padded_xx.unsqueeze(2),padded_yy.unsqueeze(2),padded_tt.unsqueeze(2)],axis=2)
         # if True:
         #     padding = torch.zeros([inp.shape[0],100,inp.shape[2]], device=self.device)
         #     inp = torch.cat([inp,padding],axis=1)
-        zero_mask = padded_voltage != 0 # zero only for padding
-        if val_idx == 0:
-            #gt_voltage = padded_voltage[padded_voltage!=0]
-            pred_voltages = self.forward(inp, padded_current)
-            #out1 = self.forward(inp[-1:,:,:],padded_current[-1:,:])
-            batch_entries = []
-            errors = []
-            for idx, current_pred in enumerate(pred_voltages):
-                entry = {}
-                entry["dataset"] = metadata["dataset"][idx]
-                entry["curve"] = metadata['curve'][idx]
-                current_ratio = metadata['ratio'][idx]
-                entry["ratio"] = current_ratio
-                is_dead =  bool(current_pred[-1] < 3.2)
-                entry["is_dead"] =is_dead
-                batch_entries.append(entry)
-                if is_dead and current_ratio < 1:
-                    errors.append(1-current_ratio)
-                elif not is_dead and current_ratio > 1:
-                    errors.append(current_ratio-1)
-                else:
-                    errors.append(0)
-            self.results.append(pd.DataFrame(batch_entries))
-        else:
-            out = self.forward(inp,padded_current)
-            loss = self.loss_func(out[zero_mask].squeeze(), padded_voltage[zero_mask].squeeze())
-            self.log('valid_loss',loss,on_step=True,on_epoch=True)
+        #zero_mask = padded_voltage != 0 # zero only for padding
+
+        #gt_voltage = padded_voltage[padded_voltage!=0]
+        pred_voltages = self.forward(inp, padded_current)
+        #out1 = self.forward(inp[-1:,:,:],padded_current[-1:,:])
+        batch_entries = []
+        errors = []
+        for idx, current_pred in enumerate(pred_voltages):
+            entry = {}
+            entry["dataset"] = metadata["dataset"][idx]
+            entry["curve"] = metadata['curve'][idx]
+            current_ratio = metadata['ratio'][idx]
+            entry["ratio"] = current_ratio
+            is_dead =  bool(current_pred[-1] < 3.2)
+            entry["is_dead"] =is_dead
+            batch_entries.append(entry)
+            if is_dead and current_ratio < 1:
+                errors.append(1-current_ratio)
+            elif not is_dead and current_ratio > 1:
+                errors.append(current_ratio-1)
+            else:
+                errors.append(0)
+        self.results.append(pd.DataFrame(batch_entries))
+        # else:
+        #     out = self.forward(inp,padded_current)
+        #     loss = self.loss_func(out[zero_mask].squeeze(), padded_voltage[zero_mask].squeeze())
+        #     self.log('valid_loss',loss,on_step=True,on_epoch=True)
 
 
     def validation_epoch_end(self, outputs) -> None:

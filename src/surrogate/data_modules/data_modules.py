@@ -24,6 +24,9 @@ def collate_fn_padd(batch):
     '''
     Padds batch of variable length
     '''
+    # Keep only batch with data
+    batch = [b for b in batch if "current" in b]
+
     ## get sequence lengths
     length_current = max([ t["current"].shape[0] for t in batch ])
     lengths_voltage = max([ t["voltage"].shape[0] for t in batch ])
@@ -297,7 +300,10 @@ class BaseDataset(Dataset):
         if self.mode == "train":
             return len(self.metadata["train_times"])
         elif self.mode == "val":
-            return len(self.metadata["train_times"])
+            return len(self.metadata["train_times"])*60
+
+        elif self.mode == "test":
+            return len(self.metadata["test_times"])*60 # Same thing as the RealDataset
         else:
             raise KeyError()
 
@@ -310,12 +316,12 @@ def load_dataset(data_dir, split_val=False):
 
     if split_val:
         train_metadata = {}
-        train_metadata["train_times"] = [x for x in range(metadata["train_times"]) if x % 10 != 0]
+        train_metadata["train_times"] = [x for x in range(metadata["train_times"]) if x % 25 != 0]
         train_metadata["chunk_size"] = metadata["chunk_size"]
         train_metadata["data_dir"] = data_dir
 
         validation_metadata = {}
-        validation_metadata["train_times"] = [x for x in range(metadata["train_times"]) if x % 10 == 0]
+        validation_metadata["train_times"] = [x for x in range(metadata["train_times"]) if x % 25 == 0]
         validation_metadata["chunk_size"] = metadata["chunk_size"]
         validation_metadata["data_dir"] = data_dir
         return train_metadata, validation_metadata
@@ -563,33 +569,20 @@ class ChunksDataset(BaseDataset):
             if self.mode == "test":
                 idx_curve = idx%len(self.curves)
             elif self.mode == "val":
-                idx_curve = idx
-                # curve = self.metadata["test_times"][idx_curve]
-                # index = self.metadata["test_times"][idx]
-                # file_idx = (index // self.metadata["chunk_size"]) * self.metadata["chunk_size"]
-                # sample_idx = index % self.metadata["chunk_size"]
-            # elif self.mode == "train":
+                idx_curve = idx%len(self.curves)
+ 
             elif self.mode == "train":
                 idx_curve = idx
                 
             else:
                 raise KeyError("mode must be either 'train' or 'test'")
             if self.mode == "test":
-                self.metadata[f"test_times"][idx_curve]
+                index = self.metadata[f"test_times"][idx_curve]
             elif self.mode in ["train","val"]:
                 index = self.metadata[f"train_times"][idx_curve]
             file_idx = (index // self.metadata["chunk_size"]) * self.metadata["chunk_size"]
             sample_idx = index % self.metadata["chunk_size"]
-            # file_idx = 1920
-            # sample_idx = 4
-            # import pdb
-            # pdb.set_trace()
 
-            # else:
-            #     raise KeyError()
-            #print("file_idx: ", file_idx, "sample_idx: ", sample_idx)
-            # Load train current and voltage
-            #current =
             if self.mode == "test":
                 current_path = self.metadata["data_dir"] / f"test_currentss_{file_idx}.pkl"
                 voltage_path = self.metadata["data_dir"] / f"test_voltages_{file_idx}.pkl"
@@ -602,12 +595,7 @@ class ChunksDataset(BaseDataset):
                 times_path = self.metadata["data_dir"] / f"train_times_{file_idx}.pkl"
                 q_path = self.metadata["data_dir"] / f"train_Qs_{file_idx}.pkl"
                 r_path = self.metadata["data_dir"] / f"train_Rs_{file_idx}.pkl"
-            # elif self.mode == "train":
-            #     
-            #     voltage_path = self.metadata["data_dir"] / f"train_voltages_{file_idx}.pkl"
-            #     times_path = self.metadata["data_dir"] / f"train_times_{file_idx}.pkl"
-            # else:
-            #     raise KeyError()
+
 
             with open(current_path, 'rb') as f:
                 current_batch = pickle.load(f)
@@ -618,7 +606,7 @@ class ChunksDataset(BaseDataset):
             with open(times_path, 'rb') as f:
                 times_batch = pickle.load(f)
 
-            if self.mode == "test":
+            if self.mode in set(["test","val"]):
                 with open(q_path, 'rb') as f:
                     q_batch = pickle.load(f)
 
@@ -650,8 +638,9 @@ class ChunksDataset(BaseDataset):
             current = (current - 2.5)/2
             # voltage_std = (voltage - self.scaler_dict["voltage"][0]) / (self.scaler_dict["voltage"][1] - self.scaler_dict["voltage"][0])
         cut_off_idx = np.where(voltage<=3.2)[0][0]
-        if self.mode == "test":
+        if self.mode in ["test","val"]:
             ratio = (idx // len(self.curves) + 70)/100
+            
             voltage = voltage[:cut_off_idx]
             gt_lenght = len(voltage)
             current = current[:len(voltage)]
@@ -666,7 +655,7 @@ class ChunksDataset(BaseDataset):
                 current = np.concatenate([current,last_current_val*np.ones(len(voltage)-len(current))])
             else:
                 current = current[:len(voltage)]
-        elif self.mode in ["train","val"]:
+        elif self.mode in ["train"]:
             
             #swapped because overwritten
             extendable_current = current[cut_off_idx:]
@@ -692,15 +681,6 @@ class ChunksDataset(BaseDataset):
                 voltage = voltage[:new_len]
                 current = current[:new_len]
 
-            # if self.drop_final:
-            #     ratio = random.uniform(0.7,1) #random.randint(0,250)
-            #     new_len = max(500, int(len(voltage)*ratio))
-            # else:
-            #     ratio=1 #FIXME when we have variable length and fnn and deeponet, we end up here. Not sure if it correct.
-
-            #new_len = max(500, int(len(voltage)*ratio))
-            # voltage = voltage[:new_len]
-            # current = current[:len(voltage)]
             assert len(current) == len(voltage)
         else:
             raise KeyError()
@@ -720,7 +700,9 @@ class ChunksDataset(BaseDataset):
         else:
             x_init = np.random.randint(min_init, max_init)
         xx, yy,tt = current[x_init:x_init+length], voltage[x_init:x_init+length], times[x_init:x_init+length]
-        assert len(xx) == len(yy) == len(tt)
+        if (not len(xx) == len(yy) == len(tt)) and self.mode == "val":  
+            return {}
+
         # if len(xx) == 0:
         #     breakpoint()
 
@@ -731,7 +713,7 @@ class ChunksDataset(BaseDataset):
         datapoint['xx'] = xx
         datapoint['yy'] = yy
         datapoint['tt'] = tt
-        if self.mode == "test":
+        if self.mode in ["test","val"]: 
             datapoint['ratio'] = ratio
             datapoint['curve'] = sample_idx
             datapoint['dataset'] = file_idx
