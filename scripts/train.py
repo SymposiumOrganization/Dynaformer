@@ -44,6 +44,8 @@ def main(cfg):
         max_epochs=cfg.epochs,
         check_val_every_n_epoch=3,
         num_sanity_val_steps=-1,
+        accelerator="gpu",
+        gpus=cfg.gpu
         
     )   
 
