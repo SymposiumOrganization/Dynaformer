@@ -30,7 +30,7 @@ You can also change current.current_type to `constant_currents` to generate a co
 For instance,  `python3 scripts/generate_dataset.py`
 
 
-The generated dataset is saved in `dataset/variable_currents` or `dataset/constant_currents`.
+The generated dataset is saved in `data/variable_currents` or `data/constant_currents`.
 
 ## How to train the model
 * Train the Dynaformer model via the following command:
