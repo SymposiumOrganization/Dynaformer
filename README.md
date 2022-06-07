@@ -35,7 +35,7 @@ The generated dataset is saved in `dataset/variable_currents` or `dataset/consta
 ## How to train the model
 * Train the Dynaformer model via the following command:
 ```
-python3 -m pdb scripts/train.py method=dynaformer data_dir=data/variable_currents/2022-04-27/14-58-12/data method.batch_size=12
+python3 scripts/train.py method=dynaformer data_dir=data/variable_currents/2022-04-27/14-58-12/data method.batch_size=12
 ```
 If you want to train the model on a different dataset, you can change the `data_dir` parameter. 
 
