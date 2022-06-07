@@ -19,15 +19,17 @@ def download_file(url, destination_file):
     return destination_file
 
 @click.command()
-@click.option("dataset_type", "--dataset_type", default="constant", help="Type of data to download")
+@click.option("dataset_type", "--dataset_type", default="variable", help="Type of data to download")
 def main(dataset_type):
     """
     Download the the training dataset
     """
     if dataset_type == "variable":
-        link = "https://drive.google.com/u/0/uc?id=1lrJpDK5hOE-rQtM1wp3C6pEl1YOoTRAR&export=download&confirm=t"
+        link = "https://polybox.ethz.ch/index.php/s/xmMRcPi8mr86xOe/download"
+        name = "random_variable_loading"
     elif dataset_type == "constant":
-        raise NotImplementedError
+        link = "https://polybox.ethz.ch/index.php/s/Gwf9pqGDIsIGmTh/download"
+        name = "random_constant_loading"
     else: 
         raise NotImplementedError
 
@@ -47,7 +49,7 @@ def main(dataset_type):
     
     # Move from tmp to data 2022-02-19/17-07-11
     print("Moving...")
-    shutil.move(f"tmp/{dataset_type}_currents/output_dataset_v2/random_variable_loading/2022-02-19", f"data/{dataset_type}_currents")
+    shutil.move(f"tmp/{dataset_type}_currents/output_dataset_v2/{name}/2022-02-19", f"data/{dataset_type}_currents")
     
     # Delete tmp folder and all its contents
     shutil.rmtree("tmp/")

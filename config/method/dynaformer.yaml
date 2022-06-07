@@ -1,0 +1,6 @@
+requires_normalization: false
+is_single_query: false
+name: dynaformer
+lr: 0.0001
+batch_size: 64
+instance_norm: False

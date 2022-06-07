@@ -287,14 +287,16 @@ class BaseDataset(Dataset):
             self.curves = self.metadata["test_times"]
         elif self.mode == "train":
             self.curves = self.metadata["train_times"]
+        elif self.mode == "val":
+            self.curves = self.metadata["train_times"]
         else:
             raise KeyError()
 
 
     def __len__(self):
-        if self.mode == "test":
-            return len(self.metadata["test_times"])*60 # Same thing as the RealDataset
-        elif self.mode == "train":
+        if self.mode == "train":
+            return len(self.metadata["train_times"])
+        elif self.mode == "val":
             return len(self.metadata["train_times"])
         else:
             raise KeyError()
@@ -364,8 +366,7 @@ class DataModuleExpII(LightningDataModule):
             #     self.real_dataset = RealDataset()
             # else:
         self.training_dataset = ChunksDataset(train_metadata, mode="train", requires_normalization=requires_normalization, min_init=min_init, max_init=max_init, min_length=min_length, max_length=max_length,drop_final=drop_final, is_single_query=is_single_query)
-        #self.val_dataset = ChunksDataset(validation_metadata, mode="val", requires_normalization=requires_normalization, min_init=min_init, max_init=max_init, min_length=min_length, max_length=max_length,drop_final=drop_final)
-        self.real_dataset = RealDataset(requires_normalization=requires_normalization) #RealDatasetSingleQuery()
+        self.val_dataset = ChunksDataset(validation_metadata, mode="val", requires_normalization=requires_normalization, min_init=min_init, max_init=max_init, min_length=min_length, max_length=max_length,drop_final=drop_final)
 
 
     def setup(self, stage=None):
@@ -398,23 +399,15 @@ class DataModuleExpII(LightningDataModule):
         return trainloader
     def val_dataloader(self):
         """returns validation dataloader"""
-        valloader_real = torch.utils.data.DataLoader(
-            self.real_dataset,
+        valloader_syn = torch.utils.data.DataLoader(
+            self.val_dataset,
             batch_size=self.batch_size,
             shuffle=False,
             drop_last=False,
             num_workers=self.num_w,
             collate_fn=collate_fn_padd,
         )
-        # valloader_syn = torch.utils.data.DataLoader(
-        #     self.val_dataset,
-        #     batch_size=self.batch_size,
-        #     shuffle=False,
-        #     drop_last=False,
-        #     num_workers=self.num_w,
-        #     collate_fn=self.collate_fn_padd,
-        # )
-        return (valloader_real,)
+        return valloader_syn
 
     def test_dataloader(self):
         testloader = torch.utils.data.DataLoader(
@@ -563,23 +556,14 @@ class FinetuningTestDataloader():
             )
         return self.test_dataloaders
 
-class DataModuleExpII_finetuning(DataModuleExpII):
-
-    def __init__(self,train_curves,val_curves,batch_size=256,num_w=24, requires_normalization=False, is_single_query=False):
-        #super().__init__()
-        LightningDataModule.__init__(self)
-        self.batch_size = batch_size
-        self.num_w = num_w
-        self.training_dataset = RealDataset(curves=train_curves, mode="train")
-        self.real_dataset = RealDataset(curves=val_curves, mode="val")
-        #self.test_dataset = RealDataset(datasets=test_datasets)
-
 class ChunksDataset(BaseDataset):
     def __getitem__(self, idx):
         #self.metadata["data_dir"][idx]
         while True:
             if self.mode == "test":
                 idx_curve = idx%len(self.curves)
+            elif self.mode == "val":
+                idx_curve = idx
                 # curve = self.metadata["test_times"][idx_curve]
                 # index = self.metadata["test_times"][idx]
                 # file_idx = (index // self.metadata["chunk_size"]) * self.metadata["chunk_size"]
@@ -590,7 +574,10 @@ class ChunksDataset(BaseDataset):
                 
             else:
                 raise KeyError("mode must be either 'train' or 'test'")
-            index = self.metadata[f"{self.mode}_times"][idx_curve]
+            if self.mode == "test":
+                self.metadata[f"test_times"][idx_curve]
+            elif self.mode in ["train","val"]:
+                index = self.metadata[f"train_times"][idx_curve]
             file_idx = (index // self.metadata["chunk_size"]) * self.metadata["chunk_size"]
             sample_idx = index % self.metadata["chunk_size"]
             # file_idx = 1920
@@ -604,13 +591,17 @@ class ChunksDataset(BaseDataset):
             # Load train current and voltage
             #current =
             if self.mode == "test":
-                current_path = self.metadata["data_dir"] / f"{self.mode}_currentss_{file_idx}.pkl"
+                current_path = self.metadata["data_dir"] / f"test_currentss_{file_idx}.pkl"
+                voltage_path = self.metadata["data_dir"] / f"test_voltages_{file_idx}.pkl"
+                times_path = self.metadata["data_dir"] / f"test_times_{file_idx}.pkl"
+                q_path = self.metadata["data_dir"] / f"test_Qs_{file_idx}.pkl"
+                r_path = self.metadata["data_dir"] / f"test_Rs_{file_idx}.pkl"
             else:
                 current_path = self.metadata["data_dir"] / f"train_currents_{file_idx}.pkl"
-            voltage_path = self.metadata["data_dir"] / f"{self.mode}_voltages_{file_idx}.pkl"
-            times_path = self.metadata["data_dir"] / f"{self.mode}_times_{file_idx}.pkl"
-            q_path = self.metadata["data_dir"] / f"{self.mode}_Qs_{file_idx}.pkl"
-            r_path = self.metadata["data_dir"] / f"{self.mode}_Rs_{file_idx}.pkl"
+                voltage_path = self.metadata["data_dir"] / f"train_voltages_{file_idx}.pkl"
+                times_path = self.metadata["data_dir"] / f"train_times_{file_idx}.pkl"
+                q_path = self.metadata["data_dir"] / f"train_Qs_{file_idx}.pkl"
+                r_path = self.metadata["data_dir"] / f"train_Rs_{file_idx}.pkl"
             # elif self.mode == "train":
             #     
             #     voltage_path = self.metadata["data_dir"] / f"train_voltages_{file_idx}.pkl"
@@ -675,7 +666,7 @@ class ChunksDataset(BaseDataset):
                 current = np.concatenate([current,last_current_val*np.ones(len(voltage)-len(current))])
             else:
                 current = current[:len(voltage)]
-        elif self.mode == "train":
+        elif self.mode in ["train","val"]:
             
             #swapped because overwritten
             extendable_current = current[cut_off_idx:]
