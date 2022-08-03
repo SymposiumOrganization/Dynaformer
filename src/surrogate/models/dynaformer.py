@@ -28,7 +28,7 @@ class Dynaformer(BaseModel2):
         decoder_layer = nn.TransformerDecoderLayer(d_model=self.hidden_dim , nhead=8)
         self.decoder=nn.TransformerDecoder(decoder_layer, num_layers=6)
         self.position_embedding_context = nn.Embedding(1000, self.hidden_dim )
-        self.positional_embedding_query = nn.Embedding(num_embeddings=500, embedding_dim=self.hidden_dim )
+        self.positional_embedding_query = nn.Embedding(num_embeddings=250, embedding_dim=self.hidden_dim )
         self.linear = torch.nn.Linear(self.hidden_dim , final_out_dim)
         self.lr = lr  
         self.loss_func = torch.nn.MSELoss(reduction='mean')
