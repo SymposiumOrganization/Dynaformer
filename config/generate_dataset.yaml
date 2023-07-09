@@ -3,21 +3,23 @@ defaults:
 
 
 generate_training_dataset: True
-njobs: 20
+njobs: 20 # Number of parallel jobs
 
 Q:
   max: 8000
   min: 5000
-  res: 50
+  res: 50 # Number of steps in the linspace
 R:
   max: 0.45
   min: 0.017215
-  res: 50
+  res: 50 # Number of steps in the linspace
 
+N_currents: 1000 # Different number of currents to be generated
+# Note that the number of trajectories is the product of the number of steps in the linspace and the number of currents to be generated i.e. N_currents * Q.res * R.res 
 
-reject_trajectory_shorter_than: 500
-reject_trajectory_longer_than: 20000
-N_currents: 1000 # Different number of currents
+reject_trajectory_shorter_than: 500 # Reject trajectories shorter than this value
+reject_trajectory_longer_than: 20000 # Reject trajectories longer than this value
+
 q_r_linspace: True # skip some q and r combinations
 perc_linspace: 0.75  # percentage of curves dropped
 current:

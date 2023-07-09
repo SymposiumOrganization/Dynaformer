@@ -4,7 +4,6 @@ from dynaformer import  metrics
 from dynaformer.data_modules.data_modules import*
 from os import listdir
 from os.path import isfile, join
-from dynaformer.data_modules.data_modules import*
 from dynaformer.models import Dynaformer
 from pathlib import Path
 import streamlit as st
@@ -13,6 +12,9 @@ import numpy as np
 from yaml import safe_load
 from tqdm import tqdm
 from decimal import Decimal
+import sys
+import dynaformer
+sys.modules['surrogate'] = dynaformer
 
 def load_pickle(pred_dir, name):
     """
@@ -57,7 +59,7 @@ def main():
     Visualizer for data and predictions
     """
     st.title("Visualizer")
-    is_model_selected = st.checkbox("Show model prediction")
+    is_model_selected = st.checkbox("Show model prediction", value=True)
     if is_model_selected:
         df_single = csem_exptrack.load_project("runs",["weights/dynaformer*"], logic="singlerun")
         df = df_single.sort_index(axis=1)      
@@ -83,6 +85,7 @@ def main():
         model_path = Path(df.loc[key,selected])
         st.write(model_path)
         model = Dynaformer.load_from_checkpoint(model_path)
+        model = model.cpu()        
         model.eval()
 
     metrics = {"rmse": [], "mse": [],  "wasserstein": []}

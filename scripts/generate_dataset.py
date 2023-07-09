@@ -11,18 +11,15 @@ from dynaformer import CurrentProfile
 from functools import partial
 import json
 
-#def return_entries(selected, times, voltage, states, currents,Q,R):
 def return_entries(selected, times, voltage, currents,Q,R):
     """
     Returns the entries specified in selected for voltage, times and states
     """
     selected_time = [times[i] for i in selected]
     selected_voltage = [voltage[i] for i in selected]
-    #selected_states = [states[i] for i in selected]
     current_values = [currents[i] for i in selected]
     Q = [Q[i] for i in selected]
     R = [R[i] for i in selected]
-    #return selected_time, selected_voltage, selected_states, current_values, Q, R
     return selected_time, selected_voltage, current_values, Q, R
 
 
@@ -259,7 +256,6 @@ def main(cfg):
         test_set = np.arange(total_traj)
 
         # Generating Test Set
-        #test_times, test_voltages, test_statess, test_currents, Qs,Rs = return_entries(test_set, timess, voltages, statess, current_values,Q_,R_)
         test_times, test_voltages, test_currents, Qs,Rs = return_entries(test_set, timess, voltages, current_values,Q_,R_)
     
         Path("data").mkdir(parents=True, exist_ok=True)

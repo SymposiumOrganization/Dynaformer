@@ -27,7 +27,7 @@ def main():
     Path("tmp/").mkdir(parents=True, exist_ok=True)
     Path("data/").mkdir(parents=True, exist_ok=True)
 
-    # Download weights from following link
+    # Download model weights from following link
     print("Downloading weights...")
     link = "https://drive.google.com/u/0/uc?id=1i11elyNd6padoh8OVLGkOWGn2MxvRODy&export=download&confirm=t"
     weights = download_file(link, "tmp/weights.zip")
@@ -41,7 +41,7 @@ def main():
     for x in Path("runs/2022-03-03/12-33-21").glob('*/*.DS_Store'):
         x.unlink()
 
-    print("Downloading Data")
+    print("Downloading Test Data")
     # Download test data
     link = "https://drive.google.com/u/0/uc?id=1ogers2BQQLPgZo3uC0NuT3xtwWgcMsGY&export=download"
     data = download_file(link, "tmp/sample_test_data.zip")
