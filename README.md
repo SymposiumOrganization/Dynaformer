@@ -7,7 +7,7 @@ Implementation, data and pretrained models for the paper "Dynaformer: A Deep Lea
 * Activate the virtual environment: `source venv/bin/activate`
 * Install dependencies: `pip install -r requirements.txt`
 * Install the dynaformer package: `pip3 install -e src/`
-* Download the model and the test data `python scripts/download_model_and_sample_data.py` # This will download the weights of Dynaformer, and the synethetic variable test data
+* Download the model and the test data `python scripts/download_model_and_test_data.py` # This will download the weights of Dynaformer, and the synethetic variable test data
 
 
 ## Demo
@@ -46,10 +46,5 @@ If you want to train the model on a different dataset, you can change the `data_
 * [ ] Add baseline models
 
 ## Additional information
-### Pretrained models and data 
-Please note that these are downloaded already with the script `download_data.py`. 
-* Dynaformer `https://drive.google.com/open?id=1-_QZQ-_j_X8W_Xq_X_X_X_X_X_X`
-* Synthetic data `https://drive.google.com/open?id=1-_QZQ-_j_X8W_Xq_X_X_X_X_X_X`
-
 ### System Specification
 All the experiments were done with Python 3.6 with pytorch 1.9.0+cu111 on Ubuntu 18.04.
