@@ -17,7 +17,6 @@ outputs_dataset/*
 multirunv2/*
 output_dataset_v2/*
 weights
-test_sets/
 GoogleDrive/
 random_constant_loading_TRAINING_hash
 *.7z

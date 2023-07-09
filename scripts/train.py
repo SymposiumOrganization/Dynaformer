@@ -1,9 +1,9 @@
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
-from surrogate.data_modules.data_modules import*
+from dynaformer.data_modules.data_modules import*
 import hydra
 from pathlib import Path
-from surrogate.models import Dynaformer
+from dynaformer.models import Dynaformer
 
 
 @hydra.main(config_path="../config/", config_name='train')

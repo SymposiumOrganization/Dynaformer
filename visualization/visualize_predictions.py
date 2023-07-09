@@ -1,11 +1,11 @@
 import csem_exptrack
 import numpy as np
-from surrogate import  metrics
-from surrogate.data_modules.data_modules import*
+from dynaformer import  metrics
+from dynaformer.data_modules.data_modules import*
 from os import listdir
 from os.path import isfile, join
-from surrogate.data_modules.data_modules import*
-from surrogate.models import Dynaformer
+from dynaformer.data_modules.data_modules import*
+from dynaformer.models import Dynaformer
 from pathlib import Path
 import streamlit as st
 import plotly.graph_objects as go

@@ -2,12 +2,12 @@ import numpy as np
 from joblib import Parallel, delayed
 from copy import deepcopy
 import pickle
-from prog_models.models import BatteryElectroChem
+from prog_models.models import BatteryElectroChemEOD
 import hydra
 from tqdm import tqdm
 import itertools
 from pathlib import Path
-from surrogate import CurrentProfile
+from dynaformer import CurrentProfile
 from functools import partial
 import json
 
@@ -66,7 +66,7 @@ def data_gen(profile, Q,R,drop_random_q_r, percent_to_drop, cfg=None):
     generator = partial(profile.generate, unit_of_measure=1)
     for q,r in (list(itertools.product(Q[::-1], R[::-1]))):
         # Re-initialize battery model with grid parameters
-        batt = BatteryElectroChem()
+        batt = BatteryElectroChemEOD()
         if drop_random_q_r:
             temp_sample= np.random.rand(1)
             if temp_sample > percent_to_drop:

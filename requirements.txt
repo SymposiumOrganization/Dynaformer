@@ -118,5 +118,7 @@ Werkzeug==2.0.1
 widgetsnbextension==3.5.1
 yarl==1.6.3
 zipp==3.4.1
+prog_models
+
 git+https://github.com/csem/ExperimentTracker.git
 src/
