@@ -29,6 +29,9 @@ Please take a look at the configuration file if you want to modify something mor
 
 The generated dataset is saved in `data/variable_currents` or `data/constant_currents` depending on the option current.current_type
 
+## Getting the real data
+
+
 ## Training
 ### How to train the model
 * Train the Dynaformer model via the following command:
