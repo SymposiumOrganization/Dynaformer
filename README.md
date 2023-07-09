@@ -7,7 +7,7 @@ Implementation, data and pretrained models for the paper "Dynaformer: A Deep Lea
 * Activate the virtual environment: `source venv/bin/activate`
 * Install dependencies: `pip install -r requirements.txt`
 * Install the dynaformer package: `pip3 install -e src/`
-* Download the model/data `python scripts/download_data.py` # It will download the weights of Dynaformer on synthetic data and the test data
+* Download the model/data `python scripts/download_model_and_sample_data.py` # It will download the weights of Dynaformer on synthetic data and the test data
 
 
 ## Demo
