@@ -24,7 +24,7 @@ Instead if you want to generate a **synthetic variable training dataset**, simil
 ```
 python3 scripts/generate_dataset.py
 ```
-Please take a look at the config file to understand if you want to modify something more in specific.
+Please take a look at the configuration file if you want to modify something more in specific.
 
 
 ### Download the synthetic training dataset
