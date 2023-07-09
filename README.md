@@ -6,7 +6,9 @@ Implementation, data and pretrained models for the paper "Dynaformer: A Deep Lea
 * Create a virtual environment: `python -m venv venv` # Note, we used python 3.6 for this project on Ubuntu 18.04
 * Activate the virtual environment: `source venv/bin/activate`
 * Install dependencies: `pip install -r requirements.txt`
+* Install the dynaformer package: `pip3 install -e src/`
 * Download the model/data `python scripts/download_data.py` # It will download the weights of Dynaformer on synthetic data and the test data
+
 
 ## How to run with the downloaded model/data
 * Visualize the inference via `streamlit run visualization/visualize_predictions.py`
