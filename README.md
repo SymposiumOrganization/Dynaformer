@@ -14,7 +14,7 @@ Implementation, data and pretrained models for the paper "Dynaformer: A Deep Lea
 * Visualize the deme of the model (inference) via `streamlit run visualization/visualize_predictions.py`
 
 ## Getting the synthetic data 
-### Generate a synthetic training dataset
+#### Generate a synthetic training dataset
 In order to generate a synthetic training dataset via `python3 scripts/generate_dataset.py`. We use [Hydra](https://github.com/facebookresearch/hydra) as configuration tool. The configuration file is `configs/generate_dataset.yaml`. 
 In general, if you want to generate **synthetic constant training dataset** similar the one in the paragraph of the paper "Performance Evaluation on Constant Load Profiles" you can use the following command:
 ```
@@ -27,7 +27,7 @@ python3 scripts/generate_dataset.py
 Please take a look at the configuration file if you want to modify something more in specific.
 
 
-### Download the synthetic training dataset
+#### Download the synthetic training dataset (only variable dataset)
 Alternatively you directly download our variable training dataset via `python scripts/download_training_data.py --dataset_type variable`.
 
 You can change the parameters in config/generate_dataset.yaml or via command line. 
